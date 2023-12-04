@@ -1,4 +1,4 @@
-name: Release
+name: Create Build and Tag
 
 on:
   workflow_dispatch:
@@ -38,17 +38,14 @@ jobs:
       run: |
         sed -i "s/__version__ =.*/__version__ = '${{ env.VERSION }}'/g" __init__.py
         cat __init__.py
-    - name: Build Python
-      run: python -m build
-    - name: Tag version on Github
-      run: |
-        git tag ${{ env.VERSION }}
-        git push origin ${{ env.VERSION }}
     - name: Increase patch version number
-      if: ${{ inputs.current_release }}
       run: |
         git config --local user.email "6058517+bblommers@users.noreply.github.com"
         git config --local user.name "Admin"
         git add __init__.py
         git commit -m "Increase version number"
         git push
+    - name: Tag version on Github
+      run: |
+        git tag ${{ env.VERSION }}
+        git push origin ${{ env.VERSION }}
